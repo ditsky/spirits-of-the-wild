@@ -15,8 +15,9 @@ class Owl extends React.Component {
         var owl_array = []
         for (var i=0; i<3; i++){
             owl_array.push(<Col md="auto"> 
-            <Slot stone={this.props.spaces[j]} stoneSelected={this.props.stoneSelected} click={this.props.click} 
-            turn={this.props.turn}> </Slot> </Col>)
+            <Slot placeStone={this.props.placeStone} animal_number={1} position={i} 
+                  stone={this.props.spaces[j]} stoneSelected={this.props.stoneSelected}> 
+            </Slot> </Col>)
             j++
         }
         return owl_array

@@ -15,7 +15,7 @@ class Game extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectingStones: true,
+      selectingStones: 0,
       turn: true,
       stoneSelected: null,
       room_id: this.props.location.state.room_id,
@@ -29,6 +29,9 @@ class Game extends Component {
     this.takeOneStone = this.takeOneStone.bind(this)
     this.addStone = this.addStone.bind(this)
     this.handleStoneClick = this.handleStoneClick.bind(this)
+    this.playTakeStone = this.playTakeStone.bind(this)
+    this.changeTurn = this.changeTurn.bind(this)
+    this.placeStone = this.placeStone.bind(this)
   }
 
   componentDidMount(){
@@ -51,9 +54,34 @@ class Game extends Component {
     })
   }
 
+  changeTurn(){
+    this.setState({turn: false, stoneSelected: null})
+  }
+
+  placeStone(animal, position){
+    if (this.state.turn && this.state.click && this.state.stoneSelected != null && this.state.selectingStones > 0) {
+      this.setState({selectingStones: this.state.selectingStones - 1})
+      if (this.state.selectingStones == 0) {
+        this.changeTurn()
+      }
+      this.takeOneStone(this.state.stoneSelected, animal, position);
+      return true
+    }
+    return false
+  }
+
   takeOneStone(color, animal, position) {
     this.props.socket.emit('take one stone', this.state.room_id, color, this.props.socket.id, animal, position)
   }
+
+  playTakeStone(stones) {
+    if (this.state.turn) {
+      console.log("setting this # of stones: " + stones)
+      this.setState({ selectingStones: stones })
+      console.log("selecting stones: " + this.state.selectingStones)
+    }
+  }
+
 
   takeTwoStones(c1, a1, p1, c2, a2, p2) {
     this.takeOneStone(c1, a1, p1)
@@ -75,8 +103,8 @@ class Game extends Component {
     if (ready){
       text = <div> 
                 <p> Your opponent is {this.state.opponent} </p> 
-                <button onClick={() => this.takeOneStone(this.state.game.bowl[0], 1, 1)}> Take One Stone </button> 
-                <button onClick={() => this.takeTwoStones(this.state.game.bowl[0], 2 , 1, this.state.game.bowl[1], 3, 1)}> Take Two Stone </button>
+                <button onClick={() => this.playTakeStone(1)}> Take One Stone </button> 
+                <button onClick={() => this.playTakeStone(2)}> Take Two Stones </button>
                 <button onClick={() => this.addStones(2)}> Add Two Stones, Take One Stone </button>
                 <button onClick={() => this.addStones(3)}> Add Three Stones, Move Coyote </button>  
               </div>
@@ -92,29 +120,38 @@ class Game extends Component {
     for (var i=1; i<board.length; i++){
       if (i==1) {
         board_array.push(<p key={key}> Owl: </p>)
-        board_array.push(<Owl spaces={board[1].spaces} stoneSelected={this.state.stoneSelected} click={click} turn={this.state.turn}> </Owl>)
+        board_array.push(<Owl spaces={board[1].spaces} placeStone={() => this.placeStone(click)} 
+                              stoneSelected={this.state.stoneSelected}> 
+                        </Owl>)
       }
       else if (i==2){
         board_array.push(<p key={key}> Rabbit: </p>)
         for (var j=0; j<board[i].spaces.length; j++){
-          board_array.push(<Slot stone={board[2].spaces[j]} stoneSelected={this.state.stoneSelected} click={click} turn={this.state.turn}></Slot>)
+          board_array.push(<Slot animal_number={2} placeStone={this.placeStone} position={j} 
+                              stone={board[2].spaces[j]} stoneSelected={this.state.stoneSelected}>
+                          </Slot>)
         }
       }
       else if (i==3){
         board_array.push(<p key={key}> Beaver: </p>)
-        board_array.push(<Beaver spaces={board[3].spaces} stoneSelected={this.state.stoneSelected} click={click} turn={this.state.turn} ></Beaver> )
+        board_array.push(<Beaver spaces={board[3].spaces} placeStone={this.placeStone} 
+                            stoneSelected={this.state.stoneSelected}>
+                        </Beaver>)
       }
       else if (i==4){
         board_array.push(<p key={key}> Salmon: </p>)
-        board_array.push(<Salmon spaces={board[4].spaces} stoneSelected={this.state.stoneSelected} click={click} turn={this.state.turn} ></Salmon> )
+        board_array.push(<Salmon spaces={board[4].spaces} placeStone={this.placeStone} 
+                            stoneSelected={this.state.stoneSelected}>
+                        </Salmon>)
       }
       else if (i==5){
         board_array.push(<p key={key}> Turtle: </p>)
-        board_array.push(<Turtle spaces={board[5].spaces} stoneSelected={this.state.stoneSelected} click={click} turn={this.state.turn} ></Turtle> )
+        board_array.push(<Turtle spaces={board[5].spaces} placeStone={this.placeStone} 
+                            stoneSelected={this.state.stoneSelected}>
+                        </Turtle>)
       }
-      key++
-      
-      
+
+      key++    
     }
     return board_array
   }
@@ -127,8 +164,8 @@ class Game extends Component {
     return bowl_array
   }
 
-  handleStoneClick(color){
-    if (this.state.turn && this.state.selectingStones){
+  handleStoneClick(color) {
+    if (this.state.turn && this.state.selectingStones > 0){
         this.setState({stoneSelected: color});
     }
   }

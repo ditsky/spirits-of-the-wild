@@ -12,8 +12,10 @@ class Slot extends React.Component {
     }
 
     handleClick(){
-        if (this.props.turn && this.props.click && this.props.stoneSelected != null){
-            this.setState({stone: this.props.stoneSelected});
+        if (this.state.stone == "grey"){
+            if (this.props.placeStone(this.props.animal_number, this.props.position)) {
+                this.setState({stone: this.props.stoneSelected});
+            }
         }
     }
     

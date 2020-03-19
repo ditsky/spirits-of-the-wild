@@ -15,26 +15,29 @@ class Beaver extends React.Component {
     renderBeaverTopRow(){
         var beaver_array = []
         beaver_array.push(<Col md="auto"> 
-            <Slot stone={this.props.spaces[0]} stoneSelected={this.props.stoneSelected} click={this.props.click} 
-            turn={this.props.turn}> </Slot> </Col>)
-        console.log(this.props.spaces)
+            <Slot animal_number={3} position={0} placeStone={this.props.placeStone} stone={this.props.spaces[0]} 
+                  stoneSelected={this.props.stoneSelected}> 
+            </Slot> </Col>)
         beaver_array.push(<Col md={{ span: 1, offset: 1 }}>
-            <Slot stone={this.props.spaces[3]} stoneSelected={this.props.stoneSelected} click={this.props.click} 
-            turn={this.props.turn}> </Slot> </Col>)
+            <Slot animal_number={3} position={1} placeStone={this.props.placeStone} stone={this.props.spaces[3]} 
+                  stoneSelected={this.props.stoneSelected}> 
+            </Slot> </Col>)
         return beaver_array
     }
 
     renderBeaverBottomRow(){
         var beaver_array = []
-        for (var i=0; i<2; i++){
+        for (var i=2; i<4; i++){
             beaver_array.push(<Col md="auto"> 
-            <Slot stone={this.props.spaces[i+1]} stoneSelected={this.props.stoneSelected} click={this.props.click} 
-            turn={this.props.turn}> </Slot> </Col>)
+            <Slot animal_number={3} position={i} placeStone={this.props.placeStone} stone={this.props.spaces[i+1]} 
+                  stoneSelected={this.props.stoneSelected}>
+            </Slot> </Col>)
         }
 
         beaver_array.push(<Col md={{ span: 1, offset: 1 }}>
-            <Slot stone ={this.props.spaces[4]} stoneSelected={this.props.stoneSelected} click={this.props.click} 
-            turn={this.props.turn}> </Slot> </Col>)
+            <Slot animal_number={3} position={4} placeStone={this.props.placeStone} stone ={this.props.spaces[4]}
+                  stoneSelected={this.props.stoneSelected}> 
+            </Slot> </Col>)
         return beaver_array
     }
     
