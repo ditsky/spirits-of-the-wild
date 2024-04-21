@@ -3,11 +3,7 @@ import Image from 'react-bootstrap/Image'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Slot from '../animals/Slot'
-import Owl from '../animals/Owl'
-import Beaver from '../animals/Beaver'
-import Salmon from '../animals/Salmon'
-import Turtle from '../animals/Turtle'
+import Board from '../board/Board'
 import Stone from '../Stone'
 
 class Game extends Component {
@@ -114,48 +110,6 @@ class Game extends Component {
     return text;
   }
 
-  renderBoard = (board, click) => {
-    var key = 0
-    var board_array = []
-    for (var i=1; i<board.length; i++){
-      if (i==1) {
-        board_array.push(<p key={key}> Owl: </p>)
-        board_array.push(<Owl spaces={board[1].spaces} placeStone={() => this.placeStone(click)} 
-                              stoneSelected={this.state.stoneSelected}> 
-                        </Owl>)
-      }
-      else if (i==2){
-        board_array.push(<p key={key}> Rabbit: </p>)
-        for (var j=0; j<board[i].spaces.length; j++){
-          board_array.push(<Slot animal_number={2} placeStone={this.placeStone} position={j} 
-                              stone={board[2].spaces[j]} stoneSelected={this.state.stoneSelected}>
-                          </Slot>)
-        }
-      }
-      else if (i==3){
-        board_array.push(<p key={key}> Beaver: </p>)
-        board_array.push(<Beaver spaces={board[3].spaces} placeStone={this.placeStone} 
-                            stoneSelected={this.state.stoneSelected}>
-                        </Beaver>)
-      }
-      else if (i==4){
-        board_array.push(<p key={key}> Salmon: </p>)
-        board_array.push(<Salmon spaces={board[4].spaces} placeStone={this.placeStone} 
-                            stoneSelected={this.state.stoneSelected}>
-                        </Salmon>)
-      }
-      else if (i==5){
-        board_array.push(<p key={key}> Turtle: </p>)
-        board_array.push(<Turtle spaces={board[5].spaces} placeStone={this.placeStone} 
-                            stoneSelected={this.state.stoneSelected}>
-                        </Turtle>)
-      }
-
-      key++    
-    }
-    return board_array
-  }
-
   renderBowl = (bowl) => {
     var bowl_array = []
     for (var i=0; i<bowl.length; i++){
@@ -173,8 +127,10 @@ class Game extends Component {
   renderGame = (ready) => {
     let game = null;
     if (ready) {
-      let your_board = this.renderBoard(this.state.your_board, true)
-      let opponent_board = this.renderBoard(this.state.opponent_board, false)
+      let your_board = <Board board={this.state.your_board} clickable={true} 
+                        placeStone={this.placeStone} stoneSelected={this.state.stoneSelected}/>
+      let opponent_board = <Board board={this.state.opponent_board} clickable={false} 
+                            placeStone={this.placeStone} stoneSelected={this.state.stoneSelected}/>
       let bowl = this.renderBowl(this.state.game.bowl)
       game = <div>
                 <Image src="https://image.shutterstock.com/image-photo/top-view-wooden-bowl-isolated-260nw-396726331.jpg" roundedCircle />
